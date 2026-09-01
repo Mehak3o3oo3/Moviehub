@@ -1,10 +1,11 @@
-import { View, Text ,Image, StyleSheet} from 'react-native';
+import { View, Text ,Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import { colors, fonts } from '../constants/theme';
 
-const HeroCard = ({movie}) => {
+const HeroCard = ({ movie, navigation }) => {
   return (
-    <View  style={styles.hero}>
+    <TouchableOpacity  style={styles.hero}
+    onPress={() => navigation.navigate('Details', { movie })}>
       <Image
        source={{uri:movie.image}}
        style={styles.image}
@@ -20,7 +21,7 @@ const HeroCard = ({movie}) => {
           {movie.year}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

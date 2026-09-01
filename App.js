@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import HomeScreen from './src/screens/HomeScreen';
 import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
 import { Manrope_500Medium, Manrope_700Bold } from '@expo-google-fonts/manrope';
 import { colors } from './src/constants/theme';
+import RootNavigator from './src/navigation/RootNavigator';
 
 export default function App() {
   const [fontsLoaded]=useFonts({
@@ -16,7 +16,7 @@ export default function App() {
   }
   return (
     <View style={styles.container}>
-      <HomeScreen/>
+      <RootNavigator/>
       <StatusBar style="light" />
     </View>
   );

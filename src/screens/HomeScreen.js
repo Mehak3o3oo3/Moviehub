@@ -10,7 +10,7 @@ import HeroCard from '../components/HeroCard';
 
 
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
    
   return (
     <ScrollView style={styles.container}>
@@ -19,7 +19,8 @@ const HomeScreen = () => {
         <View style={styles.avatar}></View>
       </View>
         <SearchBar/>
-        <HeroCard movie={movies[0]}/>
+        <HeroCard movie={movies[0]}
+        navigation={navigation}/>
     <SectionHeader title="Trending Now" />
     <FlatList
       data={movies}
@@ -29,6 +30,7 @@ const HomeScreen = () => {
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
       <MovieCard movie={item} 
+      navigation={navigation}
        />
   )}
 />
