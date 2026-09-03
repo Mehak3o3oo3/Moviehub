@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 import React, { useState } from 'react';
-
+import PillRow from '../components/PillRow';
 import { colors, fonts } from '../constants/theme';
 
 const DetailsScreen = ({ route, navigation }) => {
@@ -51,21 +51,7 @@ const DetailsScreen = ({ route, navigation }) => {
         <Text style={styles.title}>
           {movie.title}
         </Text>
-        <View style={styles.pillRow}>
-        <View style={styles.pill}>
-            <Text style={styles.pillText}>★ {movie.rating}</Text>
-        </View>
-        <View style={styles.pill} >
-          <Text style={styles.pillText}>
-          {movie.year}</Text>
-        </View>
-        <View style={styles.pill}>
-        <Text style={styles.pillText}>{movie.genre}</Text>
-        </View>
-        <View style={styles.pill}>
-        <Text style={styles.pillText}>{movie.runtime}</Text>
-        </View>
-        </View>
+        <PillRow items={[`★ ${movie.rating}`, movie.year, movie.genre, movie.runtime]} />
         <TouchableOpacity
           style={styles.trailerBtn}
           activeOpacity={0.8}
@@ -168,26 +154,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.display,
     marginBottom: 8,
   },
-  pillRow: {
-  flexDirection: 'row',
-  gap: 10,
-  marginBottom: 25,
-},
-pill: {
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-  borderRadius: 20,
-  borderWidth: 1,
-  borderColor: colors.muted,
-},
-pillText: {
-  color: colors.muted,
-  fontSize: 11,
-  fontFamily: fonts.mono,
-},
-
- 
-
   trailerBtn: {
     height: 55,
     borderRadius: 16,

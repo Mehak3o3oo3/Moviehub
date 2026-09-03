@@ -1,16 +1,9 @@
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import PillRow from './PillRow';
+import { View, Text, Image,StyleSheet,TouchableOpacity,} from 'react-native';
 import React from 'react';
-
 import { colors, fonts } from '../constants/theme';
+import PillRow from './PillRow';
 
-const MovieCard = ({ movie, navigation }) => {
+const SearchResultCard = ({ movie, navigation }) => {
 
   return (
     <TouchableOpacity
@@ -23,44 +16,42 @@ const MovieCard = ({ movie, navigation }) => {
         style={styles.image}
       />
 
-      <View style={styles.body}>
+            <View style={styles.body}>
               <Text style={styles.title} numberOfLines={1}>
                 {movie.title}
               </Text>
-              <PillRow items={[movie.year, movie.genre]} />
+              <PillRow items={[`★ ${movie.rating}`, movie.year, movie.genre, movie.runtime]} />
               </View>
 
     </TouchableOpacity>
   );
 };
 
-export default MovieCard;
+export default SearchResultCard;
 
 
 const styles = StyleSheet.create({
 
   card: {
-    width: 150,
+    width: 320,
     marginRight: 10,
     elevation: 15,
     shadowColor: colors.gold,
   },
 
   image: {
-    width: 150,
+    width: 320,
     height: 220,
     borderRadius: 12,
   },
-
-  body: {
-    paddingTop: 15,
+    body: {
+    paddingTop: 20,
   },
 
   title: {
     color: colors.text,
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: fonts.display,
     marginBottom: 8,
   },
-
 });

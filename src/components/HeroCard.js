@@ -1,6 +1,7 @@
 import { View, Text ,Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import { colors, fonts } from '../constants/theme';
+import PillRow from './PillRow';
 
 const HeroCard = ({ movie, navigation }) => {
   return (
@@ -17,9 +18,7 @@ const HeroCard = ({ movie, navigation }) => {
           {movie.title}
         </Text>
 
-        <Text style={styles.year}>
-          {movie.year}
-        </Text>
+        <PillRow items={[`★ ${movie.rating}`, movie.year, movie.genre, movie.runtime]} />
       </View>
     </TouchableOpacity>
   );
@@ -63,11 +62,5 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginTop: 4,
     fontFamily:fonts.display
-  },
-
-  year: {
-    color: colors.muted,
-    marginTop: 4,
-    fontFamily:fonts.mono
   },
 });
