@@ -1,12 +1,11 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
-import React, { useState } from 'react';
 import PillRow from '../components/PillRow';
 import { colors, fonts } from '../constants/theme';
+import { Ionicons } from '@expo/vector-icons';
 
-const DetailsScreen = ({ route, navigation }) => {
+const DetailsScreen = ({ route, navigation,favorites,toggleFavorite,}) => {
   const { movie } = route.params;
-  const [isFavorite, setIsFavorite] = useState(false);
-
+  const isFavorite = favorites.includes(movie.id);
   return (
     <ScrollView
       style={styles.container}
@@ -29,21 +28,14 @@ const DetailsScreen = ({ route, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.heartBtn}
-          onPress={() => setIsFavorite(prev => !prev)}
+          onPress={() => toggleFavorite(movie.id)}
           activeOpacity={0.8}
         >
-          <Text
-            style={[
-              styles.heartText,
-              {
-                color: isFavorite
-                  ? colors.ticket
-                  : colors.text,
-              },
-            ]}
-          >
-            ♥
-          </Text>
+          <Ionicons
+          name={isFavorite ? 'heart' : 'heart-outline'}
+          size={28}
+          color={isFavorite ? colors.ticket : colors.text}
+          />
         </TouchableOpacity>
 
       </View>
@@ -138,10 +130,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(10, 13, 19, 0.75)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-
-  heartText: {
-    fontSize: 23,
   },
 
   body: {
