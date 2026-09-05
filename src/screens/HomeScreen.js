@@ -18,7 +18,8 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.headingText}>MOVIE<Text style={{color:colors.gold}} >HUB</Text> </Text>
         <View style={styles.avatar}></View>
       </View>
-        <SearchBar/>
+        <SearchBar 
+         onFocus={() => navigation.getParent()?.navigate('SearchTab')}/>
         <HeroCard movie={movies[0]}
         navigation={navigation}/>
     <SectionHeader title="Trending Now" />

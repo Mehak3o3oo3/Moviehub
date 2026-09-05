@@ -7,7 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/theme';
 
-const SearchBar = ({ value, onChangeText }) => {
+const SearchBar = ({ value, onChangeText, onFocus }) => {
   return (
     <View style={styles.searchContainer}>
       <Ionicons
@@ -23,6 +23,7 @@ const SearchBar = ({ value, onChangeText }) => {
         clearButtonMode="always"
         autoCapitalize="none"
         value={value}
+        onFocus={onFocus}
         onChangeText={onChangeText}
       />
     </View>

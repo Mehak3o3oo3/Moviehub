@@ -72,7 +72,7 @@ export default SearchResultCard;
 const styles = StyleSheet.create({
 
   card: {
-    width: 320,
+    width: '100%',
     marginRight: 10,
     elevation: 15,
     shadowColor: colors.gold,
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 320,
-    height: 220,
+   width: '100%',
+    height: '100%',
     borderRadius: 12,
   },
 

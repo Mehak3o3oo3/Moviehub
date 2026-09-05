@@ -2,6 +2,7 @@ import { View, Text ,Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import { colors, fonts } from '../constants/theme';
 import PillRow from './PillRow';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const HeroCard = ({ movie, navigation }) => {
   return (
@@ -11,6 +12,10 @@ const HeroCard = ({ movie, navigation }) => {
        source={{uri:movie.image}}
        style={styles.image}
       />
+        <LinearGradient
+    colors={['transparent', colors.ink]}
+    style={styles.gradient}
+  />
       <View style={styles.info}>
         <Text style={styles.tag}>POPULAR</Text>
 
@@ -44,6 +49,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     
   },
+  gradient: {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  bottom: 0,
+  height: '100%',
+},
 
   info: {
     flex: 1,
