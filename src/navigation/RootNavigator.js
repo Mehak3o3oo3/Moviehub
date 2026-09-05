@@ -110,20 +110,24 @@ export default function RootNavigator() {
           </Tab.Screen>
 
         <Tab.Screen
-          name="ProfileTab"
-          component={ProfileScreen}
-          options={{
-            title: 'Profile',
-
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons
-                name="person"
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
+  name="ProfileTab"
+  options={{
+    title: 'Profile',
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons
+        name="person"
+        size={size}
+        color={color}
+      />
+    ),
+  }}
+>
+  {() => (
+    <ProfileScreen
+      favorites={favorites}
+    />
+  )}
+</Tab.Screen>
 
       </Tab.Navigator>
 
