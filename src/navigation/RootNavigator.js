@@ -1,51 +1,65 @@
 import React, { useState } from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Ionicons } from '@expo/vector-icons';
 
 import HomeStack from './HomeStack';
 import SearchStack from './SearchStack';
+import SavedStack from './SavedStack';
 
-import SavedScreen from '../screens/SavedScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 import { colors } from '../constants/theme';
 
+
 const Tab = createBottomTabNavigator();
+
 
 export default function RootNavigator() {
 
-  // Favorites state
   const [favorites, setFavorites] = useState([]);
 
-  // Add/remove movie from favorites
+
   const toggleFavorite = (movieId) => {
+
     setFavorites(prev =>
       prev.includes(movieId)
         ? prev.filter(id => id !== movieId)
         : [...prev, movieId]
     );
+
   };
 
+
   return (
+
     <NavigationContainer>
 
       <Tab.Navigator
         screenOptions={{
+
           headerShown: false,
+
           tabBarStyle: {
             backgroundColor: colors.surface,
             borderTopColor: colors.surface2,
-          }, 
+          },
+
           tabBarActiveTintColor: colors.gold,
           tabBarInactiveTintColor: colors.muted,
+
         }}
       >
 
+
+        {/* HOME */}
+
         <Tab.Screen
           name="HomeTab"
+
           options={{
             title: 'Home',
 
@@ -67,8 +81,11 @@ export default function RootNavigator() {
         </Tab.Screen>
 
 
+        {/* SEARCH */}
+
         <Tab.Screen
           name="SearchTab"
+
           options={{
             title: 'Search',
 
@@ -89,9 +106,13 @@ export default function RootNavigator() {
           )}
         </Tab.Screen>
 
+
+        {/* SAVED */}
+
         <Tab.Screen
-           name="SavedTab"
-            options={{
+          name="SavedTab"
+
+          options={{
             title: 'Saved',
 
             tabBarIcon: ({ color, size }) => (
@@ -101,36 +122,45 @@ export default function RootNavigator() {
                 color={color}
               />
             ),
-          }}>
+          }}
+        >
           {() => (
-            <SavedScreen
-            favorites={favorites}
+            <SavedStack
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
             />
-            )}
-          </Tab.Screen>
+          )}
+        </Tab.Screen>
+
+
+        {/* PROFILE */}
 
         <Tab.Screen
-  name="ProfileTab"
-  options={{
-    title: 'Profile',
-    tabBarIcon: ({ color, size }) => (
-      <Ionicons
-        name="person"
-        size={size}
-        color={color}
-      />
-    ),
-  }}
->
-  {() => (
-    <ProfileScreen
-      favorites={favorites}
-    />
-  )}
-</Tab.Screen>
+          name="ProfileTab"
+
+          options={{
+            title: 'Profile',
+
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons
+                name="person"
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        >
+          {() => (
+            <ProfileScreen
+              favorites={favorites}
+            />
+          )}
+        </Tab.Screen>
+
 
       </Tab.Navigator>
 
     </NavigationContainer>
+
   );
 }

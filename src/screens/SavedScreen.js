@@ -3,9 +3,9 @@ import { View, Text, StyleSheet ,FlatList} from 'react-native';
 import { colors, fonts } from '../constants/theme';
 import movies from '../data/movies';
 import SearchResultCard from '../components/SearchResultCard';
-import { Ionicons } from '@expo/vector-icons';
 
-const SavedScreen = ({navigation,favorites,}) => {
+
+const SavedScreen = ({ navigation, favorites, toggleFavorite }) => {
   const favoriteMovies = movies.filter(movie => favorites.includes(movie.id));
   return (
     <View style={styles.container}>
@@ -28,6 +28,8 @@ const SavedScreen = ({navigation,favorites,}) => {
             <SearchResultCard
               movie={item}
               navigation={navigation}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
             />
           )}
         />
