@@ -45,9 +45,6 @@ const SearchResultCard = ({
 
       </View>
 
-
-      {/* Favorite Button */}
-
       {toggleFavorite && (
         <TouchableOpacity
           style={styles.cardHeartBtn}

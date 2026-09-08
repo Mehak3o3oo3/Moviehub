@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {View, Text, FlatList, StyleSheet,} from 'react-native';
 import SearchBar from '../components/SearchBar';
-import movies from '../data/movies';
 import { colors, fonts } from '../constants/theme';
 import SearchResultCard from '../components/SearchResultCard';
+import { fetchPopularMovies } from '../services/movieApi';
+
 
 const SearchScreen = ({ navigation }) => {
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [movies, setMovies] = useState([]);
+
 
   const filteredMovies = movies.filter((movie) =>
     movie.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
   );
+  useEffect(() => {
+  fetchPopularMovies().then(data => setMovies(data));
+}, []);
 
   return (
     <View style={styles.container}>
