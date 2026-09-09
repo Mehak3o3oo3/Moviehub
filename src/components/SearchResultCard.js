@@ -67,23 +67,23 @@ export default SearchResultCard;
 
 
 const styles = StyleSheet.create({
-
   card: {
     width: '100%',
-    marginRight: 10,
-    elevation: 15,
-    shadowColor: colors.gold,
+    marginBottom: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: colors.surface,
     position: 'relative',
   },
 
   image: {
-   width: '100%',
-    height: '100%',
-    borderRadius: 12,
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
   },
 
   body: {
-    paddingTop: 20,
+    padding: 14,
   },
 
   title: {
@@ -104,5 +104,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
 });

@@ -19,7 +19,7 @@ const MovieCard = ({ movie, navigation }) => {
       activeOpacity={0.8}
     >
       <Image
-        source={{ uri: movie.image }}
+        source={{ uri: movie.backdropImage }}
         style={styles.image}
       />
 

@@ -1,22 +1,74 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
+
 import PillRow from '../components/PillRow';
+
 import { colors, fonts } from '../constants/theme';
+
 import { Ionicons } from '@expo/vector-icons';
 
-const DetailsScreen = ({ route, navigation,favorites,toggleFavorite,}) => {
-  const { movie } = route.params;
+import { fetchMovieCredits, fetchMovieById } from '../services/movieApi';
+
+const DetailsScreen = ({
+  route,
+  navigation,
+  favorites,
+  toggleFavorite,
+}) => {
+  const { movie: initialMovie } = route.params;
+
+  const [movie, setMovie] = useState(initialMovie);
+  const [cast, setCast] = useState([]);
+
   const isFavorite = favorites.includes(movie.id);
+
+  useEffect(() => {
+    const loadFullDetails = async () => {
+      try {
+        const fullMovie = await fetchMovieById(initialMovie.id);
+        setMovie(fullMovie);
+      } catch (error) {
+        console.log('Error loading full movie details:', error);
+      }
+    };
+
+    loadFullDetails();
+  }, [initialMovie.id]);
+
+  useEffect(() => {
+    const loadCast = async () => {
+      try {
+        const data = await fetchMovieCredits(movie.id);
+        setCast(data.slice(0, 5));
+      } catch (error) {
+        console.log('Error loading cast:', error);
+      }
+    };
+
+    loadCast();
+  }, [movie.id]);
+
   return (
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
+
       <View style={styles.heroWrap}>
 
         <Image
-          source={{ uri: movie.image }}
+          source={{ uri: movie.backdropImage }}
           style={styles.heroImage}
         />
+
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => navigation.goBack()}
@@ -26,24 +78,36 @@ const DetailsScreen = ({ route, navigation,favorites,toggleFavorite,}) => {
             ←
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.heartBtn}
           onPress={() => toggleFavorite(movie.id)}
           activeOpacity={0.8}
         >
           <Ionicons
-          name={isFavorite ? 'heart' : 'heart-outline'}
-          size={28}
-          color={isFavorite ? colors.ticket : colors.text}
+            name={isFavorite ? 'heart' : 'heart-outline'}
+            size={28}
+            color={isFavorite ? colors.ticket : colors.text}
           />
         </TouchableOpacity>
 
       </View>
+
       <View style={styles.body}>
+
         <Text style={styles.title}>
           {movie.title}
         </Text>
-        <PillRow items={[`★ ${movie.rating}`, movie.year, movie.genre, movie.runtime]} />
+
+        <PillRow
+          items={[
+            `★ ${movie.rating}`,
+            movie.year,
+            movie.genre,
+            movie.runtime,
+          ]}
+        />
+
         <TouchableOpacity
           style={styles.trailerBtn}
           activeOpacity={0.8}
@@ -52,29 +116,56 @@ const DetailsScreen = ({ route, navigation,favorites,toggleFavorite,}) => {
             ▶ Watch trailer
           </Text>
         </TouchableOpacity>
+
         <Text style={styles.sectionTitle}>
           About Movie
         </Text>
 
         <Text style={styles.description}>
-          {movie.title} is a movie released in {movie.year}.
+          {movie.overview || 'No description available.'}
         </Text>
-        <Text style={styles.sectionTitle}>Cast</Text>
 
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={styles.castItem}>
-      <View style={styles.castAvatar} />
-        <Text style={styles.castName}>Leo Actor</Text>
-      </View>
-      <View style={styles.castItem}>
-      <View style={styles.castAvatar} />
-        <Text style={styles.castName}>Jane Star</Text>
-      </View>
-      <View style={styles.castItem}>
-      <View style={styles.castAvatar} />
-        <Text style={styles.castName}>Sam Cast</Text>
-      </View>
-      </ScrollView>
+        <Text style={styles.sectionTitle}>
+          Cast
+        </Text>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {cast.map((actor) => (
+            <View
+              key={actor.id}
+              style={styles.castItem}
+            >
+
+              {actor.profile_path ? (
+                <Image
+                  source={{
+                    uri: `https://image.tmdb.org/t/p/w185${actor.profile_path}`,
+                  }}
+                  style={styles.castAvatar}
+                />
+              ) : (
+                <View style={styles.castAvatar}>
+                  <Ionicons
+                    name="person"
+                    size={28}
+                    color={colors.muted}
+                  />
+                </View>
+              )}
+
+              <Text
+                style={styles.castName}
+                numberOfLines={2}
+              >
+                {actor.name}
+              </Text>
+
+            </View>
+          ))}
+        </ScrollView>
 
       </View>
 
@@ -84,8 +175,8 @@ const DetailsScreen = ({ route, navigation,favorites,toggleFavorite,}) => {
 
 export default DetailsScreen;
 
-
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: colors.ink,
@@ -142,6 +233,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.display,
     marginBottom: 8,
   },
+
   trailerBtn: {
     height: 55,
     borderRadius: 16,
@@ -171,20 +263,28 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 30,
   },
+
   castItem: {
-  alignItems: 'center',
-  marginRight: 18,
-},
-castAvatar: {
-  width: 56,
-  height: 56,
-  borderRadius: 28,
-  backgroundColor: colors.surface2,
-  marginBottom: 6,
-},
-castName: {
-  color: colors.muted,
-  fontSize: 11,
-  fontFamily: fonts.mono,
-},
+    alignItems: 'center',
+    marginRight: 18,
+    width: 75,
+  },
+
+  castAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.surface2,
+    marginBottom: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  castName: {
+    color: colors.muted,
+    fontSize: 11,
+    fontFamily: fonts.mono,
+    textAlign: 'center',
+  },
+
 });

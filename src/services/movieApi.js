@@ -8,16 +8,25 @@ const GENRE_MAP = {
   9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie',
   53: 'Thriller', 10752: 'War', 37: 'Western',
 };
-
 const formatMovie = (movie) => {
+  let genre = 'N/A';
+  if (movie.genres && movie.genres.length > 0) {
+    genre = movie.genres[0].name;
+  } else if (movie.genre_ids && movie.genre_ids.length > 0) {
+    genre = GENRE_MAP[movie.genre_ids[0]] || 'N/A';
+  }
+
   return {
     id: movie.id,
     title: movie.title,
     year: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
     rating: movie.vote_average.toFixed(1),
-    genre: movie.genre_ids?.[0] ? GENRE_MAP[movie.genre_ids[0]] : 'N/A',
-    runtime: 'N/A',
+    genre: genre,
+    runtime: movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : 'N/A',
     image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+    backdropImage: movie.backdrop_path
+      ? `https://image.tmdb.org/t/p/w780${movie.backdrop_path}`
+      : `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
   };
 };
 
@@ -37,4 +46,9 @@ export const fetchPopularMovies = async () => {
   const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`);
   const data = await response.json();
   return data.results.map(formatMovie);
+};
+export const fetchMovieCredits = async (id) => {
+  const response = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`);
+  const data = await response.json();
+  return data.cast;
 };
