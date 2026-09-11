@@ -52,3 +52,8 @@ export const fetchMovieCredits = async (id) => {
   const data = await response.json();
   return data.cast;
 };
+export const searchMovies = async (query) => {
+  const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+  const data = await response.json();
+  return data.results.map(formatMovie);
+};

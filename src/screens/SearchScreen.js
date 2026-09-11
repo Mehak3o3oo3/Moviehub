@@ -8,14 +8,11 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
-
 import SearchBar from '../components/SearchBar';
-
 import { colors, fonts } from '../constants/theme';
-
 import SearchResultCard from '../components/SearchResultCard';
 
-import { fetchPopularMovies } from '../services/movieApi';
+import { searchMovies } from '../services/movieApi';
 
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,33 +20,39 @@ const SearchScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const filteredMovies = movies.filter((movie) =>
-    movie.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
-  );
 
   useEffect(() => {
-    const loadMovies = async () => {
+  const timer = setTimeout(() => {
+    if (!searchQuery.trim()) {
+      setMovies([]);
+      setError('');
+      return;
+    }
+
+    const search = async () => {
       try {
         setLoading(true);
         setError('');
 
-        const data = await fetchPopularMovies();
+        const data = await searchMovies(searchQuery);
         setMovies(data);
       } catch (err) {
         console.log(err);
         setError('Something went wrong. Please try again.');
+        setMovies([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadMovies();
-  }, []);
+    search();
+  }, 500);
+
+  return () => clearTimeout(timer);
+}, [searchQuery]);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
 
       <SearchBar
         value={searchQuery}
@@ -75,7 +78,7 @@ const SearchScreen = ({ navigation }) => {
           </Text>
         </View>
 
-      ) : filteredMovies.length === 0 ? (
+      ) : movies.length === 0 ? (
         <View style={styles.messageContainer}>
           <Text style={styles.emptyText}>
             No movies found
@@ -84,8 +87,8 @@ const SearchScreen = ({ navigation }) => {
 
       ) : (
         <FlatList
-          data={filteredMovies}
-          keyExtractor={(item) => item.id}
+          data={movies}
+          keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
             <SearchResultCard
@@ -96,7 +99,7 @@ const SearchScreen = ({ navigation }) => {
         />
       )}
 
-    </ScrollView>
+    </View>
   );
 };
 
