@@ -6,7 +6,6 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  ScrollView,
 } from 'react-native';
 import SearchBar from '../components/SearchBar';
 import { colors, fonts } from '../constants/theme';
@@ -17,15 +16,19 @@ import { searchMovies } from '../services/movieApi';
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
   const timer = setTimeout(() => {
     if (!searchQuery.trim()) {
       setMovies([]);
       setError('');
+      setPage(1);
+      setTotalPages(1);
       return;
     }
 
@@ -34,8 +37,12 @@ const SearchScreen = ({ navigation }) => {
         setLoading(true);
         setError('');
 
-        const data = await searchMovies(searchQuery);
-        setMovies(data);
+        const data = await searchMovies(searchQuery, 1);
+
+        setMovies(data.results);
+        setTotalPages(data.totalPages);
+        setPage(1);
+
       } catch (err) {
         console.log(err);
         setError('Something went wrong. Please try again.');
@@ -50,6 +57,26 @@ const SearchScreen = ({ navigation }) => {
 
   return () => clearTimeout(timer);
 }, [searchQuery]);
+const loadNextPage = async () => {
+  if (page >= totalPages) {
+    return;
+  }
+
+  try {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+
+    const data = await searchMovies(searchQuery, nextPage);
+
+    setMovies(prev => [...prev, ...data.results]);
+    setPage(nextPage);
+
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setLoadingMore(false);
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -87,16 +114,25 @@ const SearchScreen = ({ navigation }) => {
 
       ) : (
         <FlatList
-          data={movies}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <SearchResultCard
-              movie={item}
-              navigation={navigation}
-            />
-          )}
-        />
+  data={movies}
+  keyExtractor={(item) => item.id.toString()}
+  contentContainerStyle={styles.list}
+  onEndReached={() => {
+    if (page < totalPages) {
+      loadNextPage();
+    }
+  }}
+  onEndReachedThreshold={0.5}
+  ListFooterComponent={
+    loadingMore ? <ActivityIndicator color={colors.gold} style={{ marginVertical: 20 }} /> : null
+  }
+  renderItem={({ item }) => (
+    <SearchResultCard
+      movie={item}
+      navigation={navigation}
+    />
+  )}
+/>
       )}
 
     </View>

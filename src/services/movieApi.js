@@ -52,8 +52,11 @@ export const fetchMovieCredits = async (id) => {
   const data = await response.json();
   return data.cast;
 };
-export const searchMovies = async (query) => {
-  const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+export const searchMovies = async (query, page = 1) => {
+  const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
   const data = await response.json();
-  return data.results.map(formatMovie);
+  return {
+    results: data.results.map(formatMovie),
+    totalPages: data.total_pages,
+  };
 };

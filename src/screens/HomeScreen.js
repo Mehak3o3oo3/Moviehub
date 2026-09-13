@@ -6,12 +6,20 @@ import SearchBar from '../components/SearchBar';
 import SectionHeader from '../components/SectionHeader';
 import HeroCard from '../components/HeroCard';
 import { fetchTrendingMovies } from '../services/movieApi';
+import { RefreshControl } from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = async () => {
+  setRefreshing(true);
+  const data = await fetchTrendingMovies();
+  setMovies(data);
+  setRefreshing(false);
+  };
   useEffect(() => {
     fetchTrendingMovies()
       .then(data => setMovies(data))
@@ -36,7 +44,13 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}
+    refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      tintColor={colors.gold}/>}
+    >
       <View style={styles.headerRow}>
         <Text style={styles.headingText}>MOVIE<Text style={{ color: colors.gold }}>HUB</Text></Text>
         <View style={styles.avatar}></View>
