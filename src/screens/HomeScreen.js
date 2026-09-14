@@ -7,6 +7,7 @@ import SectionHeader from '../components/SectionHeader';
 import HeroCard from '../components/HeroCard';
 import { fetchTrendingMovies } from '../services/movieApi';
 import { RefreshControl } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
