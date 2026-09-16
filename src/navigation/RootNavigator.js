@@ -18,7 +18,7 @@ export default function RootNavigator() {
   const [favorites, setFavorites] = useState([]);
   const [favoritesLoaded, setFavoritesLoaded] = useState(false);
 
-  // Load favorites when app starts
+  
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -37,7 +37,7 @@ export default function RootNavigator() {
     loadFavorites();
   }, []);
 
-  // Save favorites whenever they change
+
   useEffect(() => {
     if (!favoritesLoaded) return;
 
@@ -55,7 +55,7 @@ export default function RootNavigator() {
     saveFavorites();
   }, [favorites, favoritesLoaded]);
 
-  // Add/remove favorite
+  
   const toggleFavorite = (movieId) => {
     setFavorites((prev) =>
       prev.includes(movieId)
@@ -77,7 +77,7 @@ export default function RootNavigator() {
           tabBarInactiveTintColor: colors.muted,
         }}
       >
-        {/* HOME */}
+      
         <Tab.Screen
           name="HomeTab"
           options={{
@@ -99,7 +99,6 @@ export default function RootNavigator() {
           )}
         </Tab.Screen>
 
-        {/* SEARCH */}
         <Tab.Screen
           name="SearchTab"
           options={{
@@ -121,7 +120,6 @@ export default function RootNavigator() {
           )}
         </Tab.Screen>
 
-        {/* SAVED */}
         <Tab.Screen
           name="SavedTab"
           options={{
@@ -143,7 +141,7 @@ export default function RootNavigator() {
           )}
         </Tab.Screen>
 
-        {/* PROFILE */}
+      
         <Tab.Screen
           name="ProfileTab"
           options={{

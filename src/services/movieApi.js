@@ -60,3 +60,12 @@ export const searchMovies = async (query, page = 1) => {
     totalPages: data.total_pages,
   };
 };
+
+export const fetchMovieTrailer = async (id) => {
+  const response = await fetch(`${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`);
+  const data = await response.json();
+  const trailer = data.results.find(
+    video => video.site === 'YouTube' && video.type === 'Trailer'
+  );
+  return trailer ? trailer.key : null;
+};

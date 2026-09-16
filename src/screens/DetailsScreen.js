@@ -10,12 +10,11 @@ import {
 } from 'react-native';
 
 import PillRow from '../components/PillRow';
-
 import { colors, fonts } from '../constants/theme';
-
 import { Ionicons } from '@expo/vector-icons';
+import { fetchMovieCredits, fetchMovieById, fetchMovieTrailer } from '../services/movieApi';
+import { Linking } from 'react-native';
 
-import { fetchMovieCredits, fetchMovieById } from '../services/movieApi';
 
 const DetailsScreen = ({
   route,
@@ -29,6 +28,13 @@ const DetailsScreen = ({
   const [cast, setCast] = useState([]);
 
   const isFavorite = favorites.includes(movie.id);
+  const [trailerKey, setTrailerKey] = useState(null);
+
+useEffect(() => {
+  fetchMovieTrailer(movie.id)
+    .then(key => setTrailerKey(key))
+    .catch(err => console.log('Trailer error:', err));
+}, [movie.id]);
 
   useEffect(() => {
     const loadFullDetails = async () => {
@@ -109,13 +115,15 @@ const DetailsScreen = ({
         />
 
         <TouchableOpacity
-          style={styles.trailerBtn}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.trailerBtnText}>
-            ▶ Watch trailer
-          </Text>
-        </TouchableOpacity>
+  style={[styles.trailerBtn, !trailerKey && { opacity: 0.5 }]}
+  disabled={!trailerKey}
+  onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${trailerKey}`)}
+  activeOpacity={0.8}
+>
+  <Text style={styles.trailerBtnText}>
+    {trailerKey ? '▶ Watch trailer' : 'No trailer available'}
+  </Text>
+</TouchableOpacity>
 
         <Text style={styles.sectionTitle}>
           About Movie
