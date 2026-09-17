@@ -19,9 +19,10 @@ const SearchResultCard = ({
   navigation,
   favorites,
   toggleFavorite,
+  iconName = 'heart',
 }) => {
 
-  const isFavorite = favorites?.includes(movie.id);
+  const isActive = favorites?.includes(movie.id);
 
   return (
     <TouchableOpacity
@@ -52,9 +53,9 @@ const SearchResultCard = ({
           activeOpacity={0.8}
         >
           <Ionicons
-            name={isFavorite ? 'heart' : 'heart-outline'}
+            name={isActive ? iconName : `${iconName}-outline`}
             size={20}
-            color={isFavorite ? colors.ticket : colors.text}
+            color={isActive ? colors.ticket : colors.text}
           />
         </TouchableOpacity>
       )}

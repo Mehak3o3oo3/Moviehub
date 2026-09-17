@@ -18,7 +18,11 @@ export default function RootNavigator() {
   const [favorites, setFavorites] = useState([]);
   const [favoritesLoaded, setFavoritesLoaded] = useState(false);
 
-  
+  // WATCHLIST
+  const [watchlist, setWatchlist] = useState([]);
+  const [watchlistLoaded, setWatchlistLoaded] = useState(false);
+
+  // Load favorites
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -37,7 +41,7 @@ export default function RootNavigator() {
     loadFavorites();
   }, []);
 
-
+  // Save favorites
   useEffect(() => {
     if (!favoritesLoaded) return;
 
@@ -55,9 +59,55 @@ export default function RootNavigator() {
     saveFavorites();
   }, [favorites, favoritesLoaded]);
 
-  
+  // Load watchlist
+  useEffect(() => {
+    const loadWatchlist = async () => {
+      try {
+        const storedWatchlist = await AsyncStorage.getItem('watchlist');
+
+        if (storedWatchlist) {
+          setWatchlist(JSON.parse(storedWatchlist));
+        }
+      } catch (error) {
+        console.log('Error loading watchlist:', error);
+      } finally {
+        setWatchlistLoaded(true);
+      }
+    };
+
+    loadWatchlist();
+  }, []);
+
+  // Save watchlist
+  useEffect(() => {
+    if (!watchlistLoaded) return;
+
+    const saveWatchlist = async () => {
+      try {
+        await AsyncStorage.setItem(
+          'watchlist',
+          JSON.stringify(watchlist)
+        );
+      } catch (error) {
+        console.log('Error saving watchlist:', error);
+      }
+    };
+
+    saveWatchlist();
+  }, [watchlist, watchlistLoaded]);
+
+  // Toggle favorite
   const toggleFavorite = (movieId) => {
     setFavorites((prev) =>
+      prev.includes(movieId)
+        ? prev.filter((id) => id !== movieId)
+        : [...prev, movieId]
+    );
+  };
+
+  // Toggle watchlist
+  const toggleWatchlist = (movieId) => {
+    setWatchlist((prev) =>
       prev.includes(movieId)
         ? prev.filter((id) => id !== movieId)
         : [...prev, movieId]
@@ -77,7 +127,7 @@ export default function RootNavigator() {
           tabBarInactiveTintColor: colors.muted,
         }}
       >
-      
+        {/* HOME */}
         <Tab.Screen
           name="HomeTab"
           options={{
@@ -95,10 +145,13 @@ export default function RootNavigator() {
             <HomeStack
               favorites={favorites}
               toggleFavorite={toggleFavorite}
+              watchlist={watchlist}
+              toggleWatchlist={toggleWatchlist}
             />
           )}
         </Tab.Screen>
 
+        {/* SEARCH */}
         <Tab.Screen
           name="SearchTab"
           options={{
@@ -116,10 +169,13 @@ export default function RootNavigator() {
             <SearchStack
               favorites={favorites}
               toggleFavorite={toggleFavorite}
+              watchlist={watchlist}
+              toggleWatchlist={toggleWatchlist}
             />
           )}
         </Tab.Screen>
 
+        {/* SAVED */}
         <Tab.Screen
           name="SavedTab"
           options={{
@@ -137,11 +193,13 @@ export default function RootNavigator() {
             <SavedStack
               favorites={favorites}
               toggleFavorite={toggleFavorite}
+              watchlist={watchlist}
+              toggleWatchlist={toggleWatchlist}
             />
           )}
         </Tab.Screen>
 
-      
+        {/* PROFILE */}
         <Tab.Screen
           name="ProfileTab"
           options={{
@@ -158,6 +216,7 @@ export default function RootNavigator() {
           {() => (
             <ProfileScreen
               favorites={favorites}
+              watchlist={watchlist}
             />
           )}
         </Tab.Screen>

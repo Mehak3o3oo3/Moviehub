@@ -7,34 +7,41 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Linking,
 } from 'react-native';
 
 import PillRow from '../components/PillRow';
 import { colors, fonts } from '../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchMovieCredits, fetchMovieById, fetchMovieTrailer } from '../services/movieApi';
-import { Linking } from 'react-native';
 
+import {
+  fetchMovieCredits,
+  fetchMovieById,
+  fetchMovieTrailer,
+} from '../services/movieApi';
 
 const DetailsScreen = ({
   route,
   navigation,
   favorites,
   toggleFavorite,
+  watchlist,
+  toggleWatchlist,
 }) => {
   const { movie: initialMovie } = route.params;
 
   const [movie, setMovie] = useState(initialMovie);
   const [cast, setCast] = useState([]);
-
-  const isFavorite = favorites.includes(movie.id);
   const [trailerKey, setTrailerKey] = useState(null);
 
-useEffect(() => {
-  fetchMovieTrailer(movie.id)
-    .then(key => setTrailerKey(key))
-    .catch(err => console.log('Trailer error:', err));
-}, [movie.id]);
+  const isFavorite = favorites.includes(movie.id);
+  const isInWatchlist = watchlist.includes(movie.id);
+
+  useEffect(() => {
+    fetchMovieTrailer(movie.id)
+      .then((key) => setTrailerKey(key))
+      .catch((err) => console.log('Trailer error:', err));
+  }, [movie.id]);
 
   useEffect(() => {
     const loadFullDetails = async () => {
@@ -67,24 +74,22 @@ useEffect(() => {
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
-
       <View style={styles.heroWrap}>
-
         <Image
           source={{ uri: movie.backdropImage }}
           style={styles.heroImage}
         />
 
+        {/* Back Button */}
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => navigation.goBack()}
           activeOpacity={0.8}
         >
-          <Text style={styles.backText}>
-            ←
-          </Text>
+          <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
 
+        {/* Favorite Button */}
         <TouchableOpacity
           style={styles.heartBtn}
           onPress={() => toggleFavorite(movie.id)}
@@ -92,15 +97,30 @@ useEffect(() => {
         >
           <Ionicons
             name={isFavorite ? 'heart' : 'heart-outline'}
-            size={28}
+            size={26}
             color={isFavorite ? colors.ticket : colors.text}
           />
         </TouchableOpacity>
 
+        {/* Watchlist Button */}
+        <TouchableOpacity
+          style={styles.bookmarkBtn}
+          onPress={() => toggleWatchlist(movie.id)}
+          activeOpacity={0.8}
+        >
+          <Ionicons
+            name={
+              isInWatchlist
+                ? 'bookmark'
+                : 'bookmark-outline'
+            }
+            size={26}
+            color={isInWatchlist ? colors.gold : colors.text}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.body}>
-
         <Text style={styles.title}>
           {movie.title}
         </Text>
@@ -114,17 +134,28 @@ useEffect(() => {
           ]}
         />
 
+        {/* Trailer */}
         <TouchableOpacity
-  style={[styles.trailerBtn, !trailerKey && { opacity: 0.5 }]}
-  disabled={!trailerKey}
-  onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${trailerKey}`)}
-  activeOpacity={0.8}
->
-  <Text style={styles.trailerBtnText}>
-    {trailerKey ? '▶ Watch trailer' : 'No trailer available'}
-  </Text>
-</TouchableOpacity>
+          style={[
+            styles.trailerBtn,
+            !trailerKey && { opacity: 0.5 },
+          ]}
+          disabled={!trailerKey}
+          onPress={() =>
+            Linking.openURL(
+              `https://www.youtube.com/watch?v=${trailerKey}`
+            )
+          }
+          activeOpacity={0.8}
+        >
+          <Text style={styles.trailerBtnText}>
+            {trailerKey
+              ? '▶ Watch trailer'
+              : 'No trailer available'}
+          </Text>
+        </TouchableOpacity>
 
+        {/* About */}
         <Text style={styles.sectionTitle}>
           About Movie
         </Text>
@@ -133,6 +164,7 @@ useEffect(() => {
           {movie.overview || 'No description available.'}
         </Text>
 
+        {/* Cast */}
         <Text style={styles.sectionTitle}>
           Cast
         </Text>
@@ -146,7 +178,6 @@ useEffect(() => {
               key={actor.id}
               style={styles.castItem}
             >
-
               {actor.profile_path ? (
                 <Image
                   source={{
@@ -170,13 +201,10 @@ useEffect(() => {
               >
                 {actor.name}
               </Text>
-
             </View>
           ))}
         </ScrollView>
-
       </View>
-
     </ScrollView>
   );
 };
@@ -184,7 +212,6 @@ useEffect(() => {
 export default DetailsScreen;
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: colors.ink,
@@ -220,6 +247,18 @@ const styles = StyleSheet.create({
   },
 
   heartBtn: {
+    position: 'absolute',
+    top: 50,
+    right: 75,
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    backgroundColor: 'rgba(10, 13, 19, 0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  bookmarkBtn: {
     position: 'absolute',
     top: 50,
     right: 20,
@@ -294,5 +333,4 @@ const styles = StyleSheet.create({
     fontFamily: fonts.mono,
     textAlign: 'center',
   },
-
 });

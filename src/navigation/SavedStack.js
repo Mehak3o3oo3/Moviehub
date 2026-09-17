@@ -6,7 +6,7 @@ import DetailsScreen from '../screens/DetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
-const SavedStack = ({ favorites, toggleFavorite }) => {
+const SavedStack = ({  favorites,toggleFavorite,watchlist, toggleWatchlist,}) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
 
@@ -16,6 +16,8 @@ const SavedStack = ({ favorites, toggleFavorite }) => {
             {...props}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            watchlist={watchlist}
+            toggleWatchlist={toggleWatchlist}
           />
         )}
       </Stack.Screen>
@@ -26,6 +28,8 @@ const SavedStack = ({ favorites, toggleFavorite }) => {
             {...props}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            watchlist={watchlist}
+            toggleWatchlist={toggleWatchlist}
           />
         )}
       </Stack.Screen>

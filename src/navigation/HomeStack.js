@@ -9,6 +9,8 @@ const Stack = createNativeStackNavigator();
 export default function HomeStack({
   favorites,
   toggleFavorite,
+  watchlist,
+  toggleWatchlist,
 }) {
 
   return (
@@ -20,6 +22,8 @@ export default function HomeStack({
             {...props}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            watchlist={watchlist}
+            toggleWatchlist={toggleWatchlist}
           />
         )}
       </Stack.Screen>
@@ -30,6 +34,8 @@ export default function HomeStack({
             {...props}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            watchlist={watchlist}
+            toggleWatchlist={toggleWatchlist}
           />
         )}
       </Stack.Screen>

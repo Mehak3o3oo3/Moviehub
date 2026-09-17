@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { colors, fonts } from '../constants/theme';
 
-const ProfileScreen = ({ favorites }) => {
+const ProfileScreen = ({ favorites ,watchlist}) => {
   return (
     <View style={styles.container}>
 
@@ -62,7 +62,7 @@ const ProfileScreen = ({ favorites }) => {
 
         <View style={styles.stat}>
           <Text style={styles.statNumber}>
-            16
+            {watchlist.length}
           </Text>
 
           <Text style={styles.statLabel}>
