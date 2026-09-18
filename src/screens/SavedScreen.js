@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { colors, fonts } from '../constants/theme';
 import SearchResultCard from '../components/SearchResultCard';
 import { fetchMovieById } from '../services/movieApi';
@@ -8,21 +8,41 @@ const SavedScreen = ({ navigation, favorites, toggleFavorite, watchlist, toggleW
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [activeTab, setActiveTab] = useState('favorites');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const loadWatchlist = async () => {
-      const moviePromises = watchlist.map(id => fetchMovieById(id));
-      const results = await Promise.all(moviePromises);
-      setWatchlistMovies(results);
+      try {
+        setLoading(true);
+        setError('');
+        const moviePromises = watchlist.map(id => fetchMovieById(id));
+        const results = await Promise.all(moviePromises);
+        setWatchlistMovies(results);
+      } catch (err) {
+        console.log('Error loading watchlist:', err);
+        setError('Something went wrong loading your watchlist.');
+      } finally {
+        setLoading(false);
+      }
     };
     loadWatchlist();
   }, [watchlist]);
 
   useEffect(() => {
     const loadFavorites = async () => {
-      const moviePromises = favorites.map(id => fetchMovieById(id));
-      const results = await Promise.all(moviePromises);
-      setFavoriteMovies(results);
+      try {
+        setLoading(true);
+        setError('');
+        const moviePromises = favorites.map(id => fetchMovieById(id));
+        const results = await Promise.all(moviePromises);
+        setFavoriteMovies(results);
+      } catch (err) {
+        console.log('Error loading favorites:', err);
+        setError('Something went wrong loading your favorites.');
+      } finally {
+        setLoading(false);
+      }
     };
     loadFavorites();
   }, [favorites]);
@@ -56,7 +76,15 @@ const SavedScreen = ({ navigation, favorites, toggleFavorite, watchlist, toggleW
         </TouchableOpacity>
       </View>
 
-      {currentMovies.length === 0 ? (
+      {loading ? (
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator color={colors.gold} size="large" />
+        </View>
+      ) : error ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>{error}</Text>
+        </View>
+      ) : currentMovies.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>
             {activeTab === 'favorites' ? 'No favorites yet' : 'Your watchlist is empty'}
